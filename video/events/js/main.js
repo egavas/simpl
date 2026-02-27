@@ -28,8 +28,13 @@ function handleEvent(e) {
   } else {
     time = ((Date.now() - start) / 1000).toFixed(3);
   }
-  data.innerHTML = '<span class = "time">' + time + '</span>' + 's: ' +
-    e.type + '<br>' + data.innerHTML;
+  var p = document.createElement('p');
+  var timeSpan = document.createElement('span');
+  timeSpan.className = 'time';
+  timeSpan.textContent = time;
+  p.appendChild(timeSpan);
+  p.appendChild(document.createTextNode('s: ' + e.type));
+  data.insertBefore(p, data.firstChild);
 }
 
 // Getting event names automatically by checking for video element

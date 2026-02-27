@@ -19,7 +19,9 @@ limitations under the License.
 var dataDiv = document.querySelector('#data');
 
 function log(message) {
-  dataDiv.innerHTML = message + '<br />' + dataDiv.innerHTML;
+  var p = document.createElement('p');
+  p.textContent = message;
+  dataDiv.insertBefore(p, dataDiv.firstChild);
 }
 
 function handleDeviceMotion(e) {

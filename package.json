@@ -31,5 +31,10 @@
     "minimatch": "latest",
     "stylelint": "latest",
     "stylelint-config-standard": "latest"
+  },
+  "overrides": {
+    "grunt": {
+      "minimatch": "^10.0.1"
+    }
   }
 }

@@ -52,7 +52,7 @@ window.addEventListener('load', function() {
 }, false);
 
 function handleCacheEvent(e) {
-  log('AppCache <em>' + e.type + '</em> event');
+  log('AppCache ' + e.type + ' event');
   console.log(e);
 }
 
@@ -63,5 +63,7 @@ function handleCacheError(e) {
 var data = document.getElementById('data');
 
 function log(text) {
-  data.innerHTML += text + '<br />';
+  var p = document.createElement('p');
+  p.textContent = text;
+  data.appendChild(p);
 }

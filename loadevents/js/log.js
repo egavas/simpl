@@ -19,8 +19,14 @@ limitations under the License.
 const data = document.querySelector('p#data');
 
 export function log(...args) {
-  const message = args.join('<br>');
   const time = (window.performance.now() / 1000).toFixed(3);
-  data.innerHTML += `<span class = "time">${time}</span>s<br>${message}<br><br>`;
+  const p = document.createElement('p');
+  const timeSpan = document.createElement('span');
+  timeSpan.className = 'time';
+  timeSpan.textContent = time + 's';
+  p.appendChild(timeSpan);
+  args.forEach(function(arg) {
+    p.appendChild(document.createTextNode(' ' + arg));
+  });
+  data.appendChild(p);
 }
-

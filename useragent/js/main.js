@@ -16,4 +16,4 @@ limitations under the License.
 
 'use strict';
 
-document.querySelector('#data').innerHTML = navigator.userAgent;
+document.querySelector('#data').textContent = navigator.userAgent;

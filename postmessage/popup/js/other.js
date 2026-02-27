@@ -17,13 +17,24 @@ limitations under the License.
 'use strict';
 
 window.addEventListener('message', function receiveMessage(event) {
+  // Validate origin before processing message
+  if (event.origin !== window.location.origin) {
+    return;
+  }
   log('Got a message from event.origin ' + event.origin + ': ');
-  log('<em>' + event.data + '</em>');
+  // Safely display event.data using DOM construction to prevent XSS
+  var p = document.createElement('p');
+  var em = document.createElement('em');
+  em.textContent = String(event.data);
+  p.appendChild(em);
+  document.getElementById('data').appendChild(p);
   // posting back to message source, i.e. index.html
-  // second parameter is eventOrigin: must match event.origin
-  event.source.postMessage('hi! this is a message from other.html', '*');
+  // use event.origin as targetOrigin instead of wildcard '*'
+  event.source.postMessage('hi! this is a message from other.html', event.origin);
 });
 
 function log(message) {
-  document.getElementById('data').innerHTML += message + '<br /><br />';
+  var p = document.createElement('p');
+  p.textContent = message;
+  document.getElementById('data').appendChild(p);
 }

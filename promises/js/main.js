@@ -53,29 +53,26 @@ limitations under the License.
   getUrl(newsEndPointUrl).then(function(response) {
     console.log('Success! We got the feed.', JSON.parse(response));
 
-    // Parse the feed and build a nice list of items
+    // Parse the feed and build a safe list using DOM construction
     var feed = JSON.parse(response);
     var stories = feed.value.items;
-    var ul = '<ul>';
+    var ul = document.createElement('ul');
     for (var i = 0; i < stories.length; i++) {
       var title = stories[i].title;
       var link = stories[i].link;
-      ul += '<li><a href="' + link + '" class="story">' +
-        title + '</a></li>';
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = link;          // href set as property, not injected HTML
+      a.className = 'story';
+      a.textContent = title;  // textContent escapes HTML
+      li.appendChild(a);
+      ul.appendChild(li);
     }
-    ul += '</ul>';
 
     var mainFeed = document.querySelector('.main-feed');
 
-    // Helper function to append content to the new div
-    function addHtmlToPage(content) {
-      var div = document.createElement('div');
-      div.innerHTML = content;
-      mainFeed.appendChild(div);
-    }
-
     // Now let's add our nice list to the page
-    addHtmlToPage(ul);
+    mainFeed.appendChild(ul);
   }, function(error) {
     console.error('Failed! No feed for you :(', error);
   });

@@ -19,7 +19,9 @@ limitations under the License.
 var data = document.querySelector('#data');
 
 function log(message) {
-  data.innerHTML += message + '<br /><br />';
+  var p = document.createElement('p');
+  p.textContent = message;
+  data.appendChild(p);
 }
 
 var o = {};

@@ -253,7 +253,7 @@ function addMatch(match) {
   } else if (match.r && match.r === 't') {
     matchElement.classList.add('scene-title');
   }
-  matchElement.innerHTML = match.t;
+  matchElement.textContent = match.t;
   matchElement.onclick = function() {
     displayText(match);
   };
@@ -280,10 +280,15 @@ function displayText(match) {
   document.title = `Search Shakespeare: ${match.l}`;
   const location = match.l.split('.');
   const text = location[0];
+  // Validate text is an alphabetic abbreviation only (prevents path traversal)
+  if (!/^[A-Za-z]+$/.test(text)) {
+    console.error('Invalid location identifier: ', text);
+    return;
+  }
   fetch(`${HTML_DIR}${text}.html`).then(response => {
     return response.text();
   }).then(html => {
-    textDiv.innerHTML = html;
+    textDiv.innerHTML = html; // intentional: loads trusted server-side play HTML
     textDiv.onmouseover = addWordSearch;
     show(textDiv);
     highlightMatch(match, location);
@@ -297,8 +302,20 @@ function addWordSearch(hoverEvent) {
   // hover events are also fired by the parent
   // plays and sonnets use <li> for each line; poems use <p>
   if (el.nodeName === 'DIV' || el.nodeName === 'LI' || el.nodeName === 'P') {
-    el.innerHTML = el.innerText.replace(/([\w]+)/g, '<span>$1</span>');
+    // Use safe DOM construction instead of innerHTML with regex replacement
+    const text = el.innerText;
+    el.textContent = '';
+    text.split(/(\b[\w]+\b)/).forEach(function(part) {
+      if (/^[\w]+$/.test(part)) {
+        const span = document.createElement('span');
+        span.textContent = part;
+        el.appendChild(span);
+      } else {
+        el.appendChild(document.createTextNode(part));
+      }
+    });
     el.onclick = spanClickEvent => {
+      if (spanClickEvent.target.nodeName !== 'SPAN') { return; }
       const word = spanClickEvent.target.textContent;
       history.pushState({isSearchResults: true}, null,
         `${window.location.origin}#${word}`);

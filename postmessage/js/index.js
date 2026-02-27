@@ -17,17 +17,29 @@ limitations under the License.
 'use strict';
 
 window.addEventListener('message', function(event) {
+  // Validate origin before processing message
+  if (event.origin !== window.location.origin) {
+    return;
+  }
   log('Sent a message to child.html in the iframe above' +
     ' and got the following in response: ');
-  log('<em>' + event.data + '</em>');
+  // Safely display event.data using DOM construction to prevent XSS
+  var p = document.createElement('p');
+  var em = document.createElement('em');
+  em.textContent = String(event.data);
+  p.appendChild(em);
+  document.getElementById('data').appendChild(p);
 });
 
 var childWindow = document.querySelector('iframe').contentWindow;
 
 childWindow.onload = function() {
-  childWindow.postMessage('Hi from index.html!', '*');
+  // Use explicit origin instead of wildcard '*'
+  childWindow.postMessage('Hi from index.html!', window.location.origin);
 };
 
 function log(message) {
-  document.getElementById('data').innerHTML += message + '<br /><br />';
+  var p = document.createElement('p');
+  p.textContent = message;
+  document.getElementById('data').appendChild(p);
 }

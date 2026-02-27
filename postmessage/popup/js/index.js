@@ -17,15 +17,27 @@ limitations under the License.
 'use strict';
 
 window.addEventListener('message', function(event) {
+  // Validate origin before processing message
+  if (event.origin !== window.location.origin) {
+    return;
+  }
   log('Sent a message to event.origin ' + event.origin +
     ' and got the following in response:');
-  log('<em>' + event.data + '</em>');
+  // Safely display event.data using DOM construction to prevent XSS
+  var p = document.createElement('p');
+  var em = document.createElement('em');
+  em.textContent = String(event.data);
+  p.appendChild(em);
+  document.getElementById('data').appendChild(p);
 });
 var other = window.open('other.html');
 other.onload = function() {
-  other.postMessage('Hi! this is a message from index.html.', '*');
+  // Use explicit origin instead of wildcard '*'
+  other.postMessage('Hi! this is a message from index.html.', window.location.origin);
 };
 
 function log(message) {
-  document.getElementById('data').innerHTML += message + '<br /><br />';
+  var p = document.createElement('p');
+  p.textContent = message;
+  document.getElementById('data').appendChild(p);
 }

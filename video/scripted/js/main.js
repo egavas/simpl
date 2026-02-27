@@ -33,5 +33,5 @@ if (promise === undefined) {
 
 video.onloadedmetadata = function() {
   var fileName = this.currentSrc.replace(/^.*[\\/]/, '');
-  document.querySelector('#videoSrc').innerHTML = 'Playing video: ' + fileName;
+  document.querySelector('#videoSrc').textContent = 'Playing video: ' + fileName;
 };

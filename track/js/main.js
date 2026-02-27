@@ -24,8 +24,9 @@ textTrack.oncuechange = function() {
   // 'this' is a textTrack
   var cue = this.activeCues[0]; // assuming there is only one active cue
   if (cue) {
-    data.innerHTML = cue.startTime + '-' + cue.endTime + ': ' + cue.text +
-      '<br />' + data.innerHTML;
+    var p = document.createElement('p');
+    p.textContent = cue.startTime + '-' + cue.endTime + ': ' + cue.text;
+    data.insertBefore(p, data.firstChild);
     //  var obj = JSON.parse(cue.text); // cues can be data too :)
   }
 };

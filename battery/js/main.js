@@ -17,7 +17,9 @@ limitations under the License.
 'use strict';
 
 function log(message) {
-  document.querySelector('#data').innerHTML += message + '<br />';
+  var p = document.createElement('p');
+  p.textContent = message;
+  document.querySelector('#data').appendChild(p);
 }
 
 function logBattery(battery) {

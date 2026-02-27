@@ -40,18 +40,16 @@ limitations under the License.
       _xhr = new XMLHttpRequest();
 
       /*
-      NB
-      NEVER pass in 'false' to XHR as its third parameter in production code --
-      Doing so initiates a **synchronous** XHR,
-      which will eat the main thread for breakfast.
-      We do it here specifically to demonstrate that the requestIdleCallback
-      is not executed until the main thread is freed
+      NB: Synchronous XHR (third param = false) was previously used here to
+      deliberately block the main thread for demo purposes. This is a security
+      and performance anti-pattern; async XHR is used instead.
       */
 
       document.querySelector('.high-priority > .output').
         insertAdjacentHTML('beforeend', '<p>Did task at ' +
         window.performance.now().toFixed(2) + '</p>');
-      _xhr.open('GET', './', false);
+      _xhr.open('GET', './', true); // async
+      _xhr.onload = function() {};  // no-op callback required for async
       _xhr.send(null);
       _xhr = null;
     }

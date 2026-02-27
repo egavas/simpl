@@ -16,6 +16,14 @@ limitations under the License.
 
 'use strict';
 
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // short name, version, display name, max size
 var db = openDatabase('songs', '1.0', 'Favourite songs', 2 * 1024 * 1024);
 
@@ -32,20 +40,20 @@ function addSong(artist, song) {
       song
     ]);
   }, handleError, function() {
-    log('Added: <br />' + song + ' by ' + artist);
+    log('Added: ' + escapeHtml(song) + ' by ' + escapeHtml(artist));
   });
 }
 
 function findSong(text) {
   db.transaction(function(tx) { // readTransaction() is apparently faster
-    var statement = 'SELECT artist, song FROM songs WHERE artist LIKE "%' +
-      text + '%" OR song like "%' + text + '%"';
-    // array unused here: ? field values not used in query statement
-    tx.executeSql(statement, [], function(thisTx, results) {
+    // Use parameterized query to prevent SQL injection
+    var statement = 'SELECT artist, song FROM songs WHERE artist LIKE ? OR song LIKE ?';
+    var param = '%' + text + '%';
+    tx.executeSql(statement, [param, param], function(thisTx, results) {
       var numRows = results.rows.length;
       for (var i = 0; i !== numRows; ++i) {
         var row = results.rows.item(i);
-        log('Found: <br />' + row.song + ' by ' + row.artist);
+        log('Found: ' + escapeHtml(row.song) + ' by ' + escapeHtml(row.artist));
       }
     }, handleError);
   });
@@ -55,14 +63,16 @@ function findSong(text) {
 
 function handleError(transaction, error) {
   transaction = null; // dummy statement to avoid jshint error...
-  log('Something went wrong: ' + error.message + ', code: ' + error.code);
+  log('Something went wrong: ' + escapeHtml(error.message) + ', code: ' + escapeHtml(String(error.code)));
   return false;
 }
 
 var dataElement = document.getElementById('data');
 
 function log(message) {
-  dataElement.innerHTML = message + '<br /><br />' + dataElement.innerHTML;
+  var p = document.createElement('p');
+  p.textContent = message;
+  dataElement.insertBefore(p, dataElement.firstChild);
 }
 
 var storeButton = document.getElementById('storeButton');

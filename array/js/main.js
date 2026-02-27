@@ -19,7 +19,9 @@ limitations under the License.
 var data = document.getElementById('data');
 
 function log(message) {
-  data.innerHTML += message + '<br />';
+  var p = document.createElement('p');
+  p.textContent = message;
+  data.appendChild(p);
 }
 
 var Person = function(name, email) {
@@ -34,8 +36,7 @@ var wilma = new Person('Wilma Flintstone', 'wilma@flintstone.com');
 
 var people = [barney, betty, fred, wilma];
 
-log('Array:<br />' + JSON.stringify(people).replace(/},/g, '},<br />') +
-  '<br />');
+log('Array: ' + JSON.stringify(people));
 
 log('Use filter() and forEach() to show people with rubble.com emails:');
 
@@ -51,19 +52,19 @@ var hasFlintstones = people.some(function(element, index, array) {
   return element.name.indexOf('Flintstone') !== -1;
 });
 
-log('<br />Use some() to check if the array contains any Flintstones:<br />' +
+log('Use some() to check if the array contains any Flintstones: ' +
     'any Flintstones? ' + hasFlintstones);
 
 var allFlintstones = people.every(function(element, index, array) {
   return element.name.indexOf('Flintstone') !== -1;
 });
 
-log('<br />Use every() to check if the array is all Flintstones:<br />' +
+log('Use every() to check if the array is all Flintstones: ' +
     'all Flinstones? ' + allFlintstones);
 
 var firstNames = people.map(function(element, index, array) {
   return element.name.split(' ')[0];
 });
 
-log('<br />Use map() to build an array of first names:<br />' +
+log('Use map() to build an array of first names: ' +
     JSON.stringify(firstNames));

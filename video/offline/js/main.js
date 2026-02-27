@@ -138,12 +138,15 @@ function handleError(e) {
 var data = document.getElementById('data');
 
 function log(text) {
-  data.innerHTML += text + '<br />';
+  var p = document.createElement('p');
+  p.textContent = text;
+  data.appendChild(p);
 }
 
 document.querySelector('video').addEventListener('loadedmetadata', function() {
   var fileName = this.currentSrc.replace(/^.*[\\/]/, '');
-  document.querySelector('#videoSrc').innerHTML = 'currentSrc: ' + fileName +
-  '<br /> videoWidth: ' + this.videoWidth + 'px<br /> videoHeight: ' +
-      this.videoHeight + 'px';
+  var info = 'currentSrc: ' + fileName +
+    ' | videoWidth: ' + this.videoWidth + 'px' +
+    ' | videoHeight: ' + this.videoHeight + 'px';
+  document.querySelector('#videoSrc').textContent = info;
 });
